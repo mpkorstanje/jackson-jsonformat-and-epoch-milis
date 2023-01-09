@@ -4,12 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,57 +18,38 @@ class AppTest {
       .setTimeZone(TimeZone.getTimeZone("UTC"))
       .findAndRegisterModules();
   final Instant instant = Instant.ofEpochMilli(123456);
-  final ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.of("UTC"));
 
   @Test
   public void test() throws JsonProcessingException {
-    String json = "{\"time\":" + instant.toEpochMilli() + "}";
-    assertEquals(zonedDateTime, mapper.readValue(json, DateHolder.class).time);
+    assertEquals(instant, mapper.readValue("{\"time\":123456}", TimeHolder.class).time);
+    assertEquals(instant, mapper.readValue("{\"time\":\"123456\"}", TimeHolder.class).time);
+    assertEquals(instant, mapper.readValue("{\"time\":123456}", TimeHolderWithFormat.class).time);
+    assertEquals(instant, mapper.readValue("{\"time\":\"123456\"}", TimeHolderWithFormat.class).time);
   }
 
-  @Test
-  public void test2() throws JsonProcessingException {
-    String json = "{\"time\":\"" + instant.toEpochMilli() + "\"}";
-    assertEquals(zonedDateTime, mapper.readValue(json, DateHolder.class).time);
-  }
+  static class TimeHolder {
 
-  @Test
-  public void test3() throws JsonProcessingException {
-    String json = "{\"time\":" + instant.toEpochMilli() + "}";
-    assertEquals(zonedDateTime, mapper.readValue(json, DateHolderWithFormat.class).time);
-  }
+    private Instant time;
 
-  @Test
-  public void test4() throws JsonProcessingException {
-    String json = "{\"time\":\"" + instant.toEpochMilli() + "\"}";
-    assertEquals(zonedDateTime, mapper.readValue(json, DateHolderWithFormat.class).time);
-  }
-
-  static class DateHolder {
-
-    private ZonedDateTime time;
-
-
-    public ZonedDateTime getTime() {
+    public Instant getTime() {
       return time;
     }
 
-    public void setTime(ZonedDateTime time) {
+    public void setTime(Instant time) {
       this.time = time;
     }
   }
 
-  static class DateHolderWithFormat {
+  static class TimeHolderWithFormat {
 
-    private ZonedDateTime time;
+    private Instant time;
 
-
-    public ZonedDateTime getTime() {
+    public Instant getTime() {
       return time;
     }
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    public void setTime(ZonedDateTime time) {
+    public void setTime(Instant time) {
       this.time = time;
     }
   }
