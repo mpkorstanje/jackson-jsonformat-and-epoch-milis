@@ -24,14 +24,11 @@ class AppTest {
 
   @Test
   public void test() throws JsonProcessingException {
+    assertEquals("{\"time\":\"1970-01-01T00:02:03.456+0000\"}", mapper.writeValueAsString(new TimeHolderWithFormat(instant)));
     assertEquals(instant, mapper.readValue("{\"time\":123456}", TimeHolder.class).time);
     assertEquals(instant, mapper.readValue("{\"time\":\"123456\"}", TimeHolder.class).time);
     assertEquals(instant, mapper.readValue("{\"time\":123456}", TimeHolderWithFormat.class).time);
     assertEquals(instant, mapper.readValue("{\"time\":\"123456\"}", TimeHolderWithFormat.class).time);
-  }
-  @Test
-  public void test2() throws JsonProcessingException {
-    assertEquals("\"1970-01-01T00:02:03.456Z\"", mapper.writeValueAsString(instant));
   }
 
   static class TimeHolder {
@@ -46,6 +43,14 @@ class AppTest {
 
   static class TimeHolderWithFormat {
     private Instant time;
+
+    public TimeHolderWithFormat() {
+
+    }
+    public TimeHolderWithFormat(Instant time) {
+        this.time = time;
+    }
+
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     public void setTime(Instant time) {
       this.time = time;
