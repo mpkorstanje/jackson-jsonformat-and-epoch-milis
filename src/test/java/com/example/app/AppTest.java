@@ -28,27 +28,15 @@ class AppTest {
   }
 
   static class TimeHolder {
-
     private Instant time;
-
-    public Instant getTime() {
-      return time;
-    }
-
     public void setTime(Instant time) {
       this.time = time;
     }
   }
 
   static class TimeHolderWithFormat {
-
     private Instant time;
-
-    public Instant getTime() {
-      return time;
-    }
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     public void setTime(Instant time) {
       this.time = time;
     }
